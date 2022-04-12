@@ -12,14 +12,14 @@ geo = Transformacje(model = input("Podaj model: "))
 plik = "wsp.txt"
 dane = np.genfromtxt(plik, delimiter=',', skip_header = 4)
 
-# Obliczenie f, l, h
+# Obliczenie phi, lambda, h
 flh = []
 for x in range(dane.shape[0]):
     flh.append(geo.xyz2flh(dane[x][0], dane[x][1], dane[x][2]))
 
 dane = np.c_[dane, np.array(flh)]
 
-# Obliczenie N, E, U
+# Obliczenie n, e, u
 neu = []
 for x in range(dane.shape[0]):
     neu.append(geo.xyz2neu(dane[x][3], dane[x][4], dane[x][5], dane[x][0], dane[x][1], dane[x][2]))
@@ -31,25 +31,25 @@ gk = []
 for x in range(dane.shape[0]):
    gk.append(geo.gauss_kruger(dane[x][3], dane[x][4]))
 dane = np.c_[dane, np.array(gk)]
-# Obliczenie u2000
+# Obliczenie x2000 i y2000
 xy2000 = []
 for x in range(dane.shape[0]):
    xy2000.append(geo.u2000(dane[x][3], dane[x][4]))
 dane = np.c_[dane, np.array(xy2000)]
 
-# Obliczenie u1992
+# Obliczenie x1992 i y1992
 xy1992 = []
 for x in range(dane.shape[0]):
     xy1992.append(geo.u2000(dane[x][3], dane[x][4]))
 dane = np.c_[dane, np.array(xy1992)]
 
-# Obliczenie kąta azymutu i kąta elewacji
+# Obliczenie azymutu i elewacji
 az_i_el = []
 for x in range(dane.shape[0]):
     az_i_el.append(geo.azymut_elewacja(dane[x][3], dane[x][4], dane[x][5], dane[x][0], dane[x][1], dane[x][2]))
 dane = np.c_[dane, np.array(az_i_el)]
 
-# Odległości 2d oraz 3d
+# Odległości 2D oraz 3D
 odl_2d_3d = []
 for x in range(dane.shape[0]):
     try:
