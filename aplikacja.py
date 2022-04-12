@@ -58,3 +58,6 @@ for x in range(dane.shape[0]):
         odl_2d_3d.append([0,0])
 
 dane = np.c_[dane, np.array(odl_2d_3d)]
+
+np.savetxt("wyniki.txt", dane, delimiter=',  ', fmt = '%10.3f' , header = geo.header)
+

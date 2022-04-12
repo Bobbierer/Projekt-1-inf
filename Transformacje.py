@@ -141,6 +141,8 @@ class Transformacje:
         odl2d = sqrt((A[0] - B[0])**2 + (A[1] - B[1])**2)
         return(odl2d)
     
+    header = "Wyniki\n   X             Y             Z               phi            lam           h           N             E              U          xgk          ygk      nr_strefy        x2000       y2000        x1992          y1992         azymut      elewacja       odl_2d      odl_3d"
+
 
 if __name__ == "__main__":
     # utworzenie obiektu
