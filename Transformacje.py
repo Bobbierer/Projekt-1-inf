@@ -56,11 +56,17 @@ class Transformacje:
         Zkon = (N*(1-self.ecc2)+hel)*sin(phi)
         return(Xkon, Ykon, Zkon)
     
-    def xyz2neu(self, phi, lam):
+    def xyz2neu(self, phi, lam, h, X, Y, Z):
         R = np.array([(-sin(phi)*cos(lam), -sin(lam), cos(phi) * cos(lam)), (-sin(phi)*sin(lam), cos(lam), cos(phi)*sin(lam)), (cos(phi), 0, sin(phi))])
-        n = R[:,0]
-        e = R[:,1]
-        u = R[:,2]
+        N = self.Np(phi,self.a,self.ecc2)
+        Xp = (N + h) * cos(phi) * cos(lam)
+        Yp = (N + h) * cos(phi) * sin(lam)
+        Zp = (N * (1 - self.ecc2) + h) * sin(phi)
+        XYZp = np.array([Xp, Yp, Zp])
+        XYZs = np.array([X, Y, Z])
+        XYZ = XYZs - XYZp
+        XYZ = np.array(XYZ)
+        n, e, u = R.T @ XYZ
         return(n, e, u)
     
     def sigma(self, phi, a, ecc2):
@@ -103,26 +109,29 @@ class Transformacje:
         return(xgk, ygk, nrS)
     
 
-    def u2000(self, xgk, ygk):
+    def u2000(self, phi, lam):
+        xgk, ygk, nrS = self.gauss_kruger(phi, lam)
         x2000 = xgk * 0.999923
         y2000 = ygk * 0.999923 + ((nrS * 1000000)+500000)
         
         return(x2000, y2000)
     
-    def u1992(self, xgk, ygk):
+    def u1992(self, phi, lam):
+        xgk, ygk, nrS = self.gauss_kruger(phi, lam)
         x92 = (xgk * 0.9993) - 5300000
         y92 = (ygk * 0.9993) + 500000
         
         return(x92, y92)
     
-    def azymut_elewacja(self, f, l, h, x, y, z):
+    def azymut_elewacja(self, phi, lam, h, x, y, z):
 
-        n, e, u = self.neu(f, l, h, x, y, z)
+        n, e, u = self.xyz2neu(phi, lam, h, x, y, z)
         azymut = atan2(e, n)
-        azymut = np.rad2deg(azymut)
+        azymut = degrees(azymut)
         azymut = azymut + 360 if azymut < 0 else azymut
         elewacja = asin(u/(sqrt(e**2+n**2+u**2)))
-        elewacja = np.rad2deg(elewacja)
+        elewacja = degrees(elewacja)
+        return azymut,elewacja
     
     def odl3D(self, A, B):
         od = sqrt( (A[0] - B[0])**2 + (A[1] - B[1])**2 + (A[2] - B[2])**2 )
